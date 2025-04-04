@@ -43,11 +43,11 @@ int threadCounter[THREAD_NO] = {0};
 void *incrementatore(void *arg){
     
     while(1){
-        Sleep(10); // SIMULA DEL TEMPO DI ATTESA DI ALTRE OPERAZIONI
+        Sleep(10); // SIMULAZIONE DEL TEMPO DI ATTESA DI ALTRE OPERAZIONI
 
         pthread_mutex_lock(&mutex); // INIZIO SEZIONE CRITICA
 
-        if (contatore >= INCREMENT_NO) { 
+        if (contatore >= INCREMENT_NO){ 
             pthread_mutex_unlock(&mutex);
             break; 
         }
@@ -63,7 +63,7 @@ void *incrementatore(void *arg){
 
 
 int main(){
-
+    
     pthread_t threads[THREAD_NO];
     int threads_id[THREAD_NO];
     pthread_mutex_init(&mutex, NULL);
