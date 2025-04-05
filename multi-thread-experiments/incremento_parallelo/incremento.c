@@ -24,6 +24,12 @@
  * 
  * Un thread su 4 incrementi con sleep(10000) richiede tempo >= 40 secondi
  * Più thread su ===========================  richiede meno tempo
+ * 
+ * spostare la prossima riga di codice dedicata alla stampa del singolo incremento dentro o fuori
+ * la sezione critica, influisce sull'accuratezza dei messaggi d'incremento, ma non su quella del risultato. 
+ * Il risultato finale è corretto a priori, ma bisogna valutare se è meglio ridurre la dimensione della 
+ * sezione critica, o rendere atomica anche la stampa del messaggio dell'incremento.
+ * 
 ***********************************************************************************/
 
 
@@ -32,6 +38,7 @@
 #include <windows.h>
 #define INCREMENT_NO 1000
 #define THREAD_NO 4
+#define MS_FOR_EVERY_OPERATION 2
 
 
 pthread_mutex_t mutex;
@@ -43,7 +50,7 @@ int threadCounter[THREAD_NO] = {0};
 void *incrementatore(void *arg){
     
     while(1){
-        Sleep(10); // SIMULAZIONE DEL TEMPO DI ATTESA DI ALTRE OPERAZIONI
+        Sleep(MS_FOR_EVERY_OPERATION); // SIMULAZIONE DEL TEMPO DI ATTESA DI ALTRE OPERAZIONI
 
         pthread_mutex_lock(&mutex); // INIZIO SEZIONE CRITICA
 
@@ -54,9 +61,9 @@ void *incrementatore(void *arg){
 
         contatore = contatore + 1;
         threadCounter[*(int*)arg]++;
-        printf("Contatore: %d, incremento da thread n. %ld \n", contatore, *(int*)arg);     
+        printf("Contatore: %d, incremento da thread n. %ld \n", contatore, *(int*)arg);  
         pthread_mutex_unlock(&mutex); // FINE SEZIONE CRITICA
-        
+      
     }
     return NULL;
 }
